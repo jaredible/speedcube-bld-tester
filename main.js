@@ -1,6 +1,7 @@
 var cubelet0 = document.getElementById("cubelet-0");
 var cubelet1 = document.getElementById("cubelet-1");
 var letter = document.getElementById("letter");
+var message = document.getElementById("message");
 
 var letters = "ABCDEFGHIJKLMNOPZRSTUVWY";
 var colors = ["yellow", "red", "green", "orange", "white", "blue"];
@@ -26,17 +27,39 @@ var edgePairs = [
 ];
 
 var currentLetter;
+var transitionTimeout;
 
 function onClickCubelet(index) {
+	if (transitionTimeout) return;
+
 	var letter;
 	if (index == 0) letter = cubelet0.getAttribute("data-letter");
 	else if (index == 1) letter = cubelet1.getAttribute("data-letter");
 	console.log("Clicked: " + letter + " (" + getLetterColor(letter) + ")");
 
-	if (letter === currentLetter) console.log("Correct!");
-	else console.log("Wrong!");
+	var statusMessage;
+	var statusColor;
+	var statusShadow;
+	if (letter === currentLetter) {
+		statusMessage = "YES";
+		statusColor = "#2ecc71";
+		statusShadow = "0px 2px 1px #27ae60";
+	} else {
+		statusMessage = "NO";
+		statusColor = "#e74c3c";
+		statusShadow = "0px 2px 1px #c0392b";
+	}
+	message.innerHTML = statusMessage;
+	message.style.color = statusColor;
+	message.style.textShadow = statusShadow;
 
-	resetTest();
+	transitionTimeout = setTimeout(function() {
+		message.innerHTML = "";
+		message.style.color = "";
+		message.style.textShadow = "";
+		resetTest();
+		transitionTimeout = undefined;
+	}, 1000);
 }
 
 function resetTest() {
@@ -45,7 +68,7 @@ function resetTest() {
 	var randomLetterIndex;
 	var randomLetter;
 	do {
-		randomLetterIndex = Math.floor(Math.random() * (letters.length + 1));
+		randomLetterIndex = Math.floor(Math.random() * (letters.length - 1));
 		randomLetter = letters.charAt(randomLetterIndex);
 	} while (randomLetter === currentLetter);
 	currentLetter = randomLetter;
@@ -57,22 +80,22 @@ function resetTest() {
 	var j;
 	loop: for (i = 0; i < edgePairs.length; i++) {
 		for (j = 0; j < edgePairs[i].length; j++) {
-			if (edgePairs[i][j] == randomLetter) {
+			if (edgePairs[i][j] === randomLetter) {
 				break loop;
 			}
 		}
 	}
+	console.log(i + ", " + j);
 
-	var letter0 = edgePairs[i][j];
-	var letter1 = edgePairs[i][1 - j];
-	var color0 = getLetterColor(letter0);
-	var color1 = getLetterColor(letter1);
+	var edgeLetters = [edgePairs[i][j], edgePairs[i][1 - j]];
+
+	var index = 0;
+	if (Math.random() < 0.5) index = 1;
 	
-	cubelet0.style.backgroundColor = getPrettyColor(color0);
-	cubelet1.style.backgroundColor = getPrettyColor(color1);
-
-	cubelet0.setAttribute("data-letter", letter0);
-	cubelet1.setAttribute("data-letter", letter1);
+	cubelet0.style.backgroundColor = getPrettyColor(getLetterColor(edgeLetters[index]));
+	cubelet1.style.backgroundColor = getPrettyColor(getLetterColor(edgeLetters[1 - index]));
+	cubelet0.setAttribute("data-letter", edgeLetters[index]);
+	cubelet1.setAttribute("data-letter", edgeLetters[1 - index]);
 
 	console.log("Test reset");
 }

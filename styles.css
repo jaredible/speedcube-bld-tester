@@ -10,6 +10,10 @@ body {
 	background-color: aliceblue;
 }
 
+h1, h2 {
+	cursor: default;
+}
+
 #edge {
 	padding: 50px;
 	width: 50%;
@@ -35,7 +39,13 @@ body {
 }
 
 #letter {
-	padding: 20px;
+	padding: 10px;
 	text-align: center;
 	font-weight: bold;
+}
+
+#message {
+	padding: 20px;
+	text-align: center;
+	font-weight: bolder;
 }

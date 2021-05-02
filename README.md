@@ -1,4 +1,4 @@
-# Speedcube BLD Tester
+# 2w2p
 
 ![test0](https://github.com/jaredible/speedcube-bld-tester/blob/master/.screenshots/test0.gif)
 

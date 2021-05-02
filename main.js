@@ -3,6 +3,16 @@ var cubelet1 = document.getElementById("cubelet-1");
 var letter = document.getElementById("letter");
 var message = document.getElementById("message");
 
+var mouseX, mouseY;
+
+document.onmousemove = function(e) {
+	e = e || window.event;
+	mouseX = e.clientX;
+	mouseY = e.clientY;
+};
+
+document.body.onkeypress = onKeyPress;
+
 var letters = "ABCDEFGHIJKLMNOPZRSTUVWY";
 var colors = ["yellow", "red", "green", "orange", "white", "blue"];
 
@@ -54,12 +64,14 @@ function onClickCubelet(index) {
 	message.style.textShadow = statusShadow;
 
 	transitionTimeout = setTimeout(function() {
+		cubelet0.innerHTML = "";
+		cubelet1.innerHTML = "";
 		message.innerHTML = "";
 		message.style.color = "";
 		message.style.textShadow = "";
 		resetTest();
 		transitionTimeout = undefined;
-	}, 1000);
+	}, 500);
 }
 
 function resetTest() {
@@ -85,7 +97,6 @@ function resetTest() {
 			}
 		}
 	}
-	console.log(i + ", " + j);
 
 	var edgeLetters = [edgePairs[i][j], edgePairs[i][1 - j]];
 
@@ -115,4 +126,57 @@ function getPrettyColor(color) {
 		case "white": return "rgb(255, 255, 255)";
 		case "blue": return "rgb(117, 176, 222)";
 	}
+}
+
+function elementAtMousePosition() {
+	return document.elementFromPoint(mouseX, mouseY);
+}
+
+function onKeyPress(event) {
+	if (transitionTimeout) return;
+
+	var element = elementAtMousePosition();
+	if (!element.id.includes("cubelet")) return;
+
+	var key = event.key.toUpperCase();
+	if (letters.indexOf(key) == -1) return;
+	element.innerHTML = key;
+	console.log("Prediction: " + key);
+
+	var letter = element.getAttribute("data-letter");
+	console.log("Actual: " + letter);
+
+	var correctness = key === letter;
+	console.log(correctness);
+
+	var finished = cubelet0.innerHTML && cubelet1.innerHTML;
+	if (!finished) return;
+
+	var passed = cubelet0.getAttribute("data-letter") === cubelet0.innerHTML && cubelet1.getAttribute("data-letter") === cubelet1.innerHTML;
+
+	var statusMessage;
+	var statusColor;
+	var statusShadow;
+	if (passed) {
+		statusMessage = "PASSED";
+		statusColor = "#2ecc71";
+		statusShadow = "0px 2px 1px #27ae60";
+	} else {
+		statusMessage = "FAILED";
+		statusColor = "#e74c3c";
+		statusShadow = "0px 2px 1px #c0392b";
+	}
+	message.innerHTML = statusMessage;
+	message.style.color = statusColor;
+	message.style.textShadow = statusShadow;
+
+	transitionTimeout = setTimeout(function() {
+		cubelet0.innerHTML = "";
+		cubelet1.innerHTML = "";
+		message.innerHTML = "";
+		message.style.color = "";
+		message.style.textShadow = "";
+		resetTest();
+		transitionTimeout = undefined;
+	}, 1000);
 }

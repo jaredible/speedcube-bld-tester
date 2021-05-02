@@ -24,18 +24,14 @@ h1, h2 {
 	display: block;
 	width: 100px;
 	height: 100px;
+	margin: 0 auto;
+	padding: 2px;
 	border: 2px solid black;
 	cursor: hand;
 }
 
-#cubelet-0 {
-	margin: 0 auto;
-	background-color: yellow;
-}
-
-#cubelet-1 {
-	margin: 0 auto;
-	background-color: green;
+.cubelet:hover {
+	border: 2px dashed black;
 }
 
 #letter {
@@ -48,4 +44,16 @@ h1, h2 {
 	padding: 20px;
 	text-align: center;
 	font-weight: bolder;
+}
+
+#description {
+	position: fixed;
+	left: 50%;
+	bottom: 0;
+	transform: translate(-50%, 0);
+	margin: 0 auto;
+	padding: 10px;
+	font-style: italic;
+	font-size: smaller;
+	text-align: center;
 }
